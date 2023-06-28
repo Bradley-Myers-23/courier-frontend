@@ -33,7 +33,7 @@ jobs:
           SOURCE: "dist/"
           REMOTE_HOST: "ec2-3-137-157-78.us-east-2.compute.amazonaws.com"
           REMOTE_USER: ubuntu
-          TARGET: "/var/www/html/travel-frontend"
+          TARGET: "/var/www/html/courier-frontend"
           #test
           #test2
           #Test3
