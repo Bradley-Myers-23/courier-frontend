@@ -30,9 +30,9 @@ const router = createRouter({
       component: () => import("./views/EditTrip.vue"),
     },
     {
-      path: "/userTrips",
-      name: "userTrips",
-      component: () => import("./views/UserTrip.vue"),
+      path: "/home",
+      name: "home",
+      component: () => import("./views/Home.vue"),
     },
   ],
 });
