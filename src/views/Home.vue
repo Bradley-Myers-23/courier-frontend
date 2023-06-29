@@ -51,6 +51,18 @@ onMounted(async () => {
       </v-col>
     </v-row>
 
+    <v-footer-border>
+      <v-row justify="center" no-gutters>
+        <v-col class="text-center mt-4" cols="12">
+          <strong>1-555-COURIER</strong>
+        </v-col>
+      </v-row>
+      <v-row justify="center" no-gutters>
+        <v-col class="text-center" cols="12">
+          {{ new Date().getFullYear() }} — <strong>Courier Services Inc.</strong>
+        </v-col>
+      </v-row>
+    </v-footer-border>
     <v-snackbar v-model="snackbar.value" rounded="pill">
       {{ snackbar.text }}
 
