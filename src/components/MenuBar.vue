@@ -8,7 +8,7 @@ const router = useRouter();
 
 const user = ref(null);
 
-const title = ref("Courier Service");
+const title = ref("ACME Courier Service");
 
 const logoURL = ref("");
 
