@@ -50,6 +50,9 @@ function logout() {
 
       <v-btn class="mx-2" :to="{ name: 'home' }"> Home </v-btn>
       <v-btn v-if="user === null" class="mx-2" :to="{ name: 'login' }">
+        Clerk
+      </v-btn>
+      <v-btn v-if="user === null" class="mx-2" :to="{ name: 'login' }">
         Login
       </v-btn>
       <v-menu v-if="user !== null" min-width="200px" rounded>

@@ -21,13 +21,9 @@ const user = ref({
 
 onMounted(async () => {
   if (localStorage.getItem("user") !== null) {
-    router.push({ name: "trips" });
+    router.push({ name: "home" });
   }
 });
-
-function navigateToTrips() {
-  router.push({ name: "trips" });
-}
 
 async function createAccount() {
   await UserServices.addUser(user.value)
