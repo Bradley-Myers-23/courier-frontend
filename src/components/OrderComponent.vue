@@ -2,6 +2,7 @@
 import { onMounted, ref, computed } from "vue";
 import { useRouter } from "vue-router";
 import UserServices from "../services/UserServices";
+import OrderServices from "../services/OrderServices.js";
 
 const router = useRouter();
 
@@ -9,8 +10,20 @@ const selectedCourier = ref({});
 const isViewOrder = ref(false);
 const showDetails = ref(false);
 const isAddUser = ref(false);
+const isEdit = ref(false);
 const users = ref([]);
 const user = ref(null);
+
+const newOrder = ref({
+  pickupTime: null,
+  dropoffTime: null,
+  price: null,
+  pickupLocation: null,
+  dropoffLocation: null,
+  status: "Pending",
+  route: "",
+});
+
 // const userOrders = ref([]);
 // const userOrder = ref({
 //   orderId: undefined,
@@ -117,13 +130,13 @@ function closeAddUser() {
 <template>
   <v-card
     class="rounded-lg elevation-5 mb-8"
-    @click="showDetails = (!isViewOrder) ? !showDetails : showDetails"
+    @click="showDetails = (!isAddUser && !isEdit) ? !showDetails : showDetails"
   >
     <v-card-title class="headline">
       <v-row align="center">
         <v-col cols="10">
           <v-chip class="ma-2" label>
-            Order #{{ order.id}} 
+            Order #{{order.id}} 
           </v-chip>
         </v-col>
         <v-col class="d-flex justify-left">

@@ -39,6 +39,12 @@ const router = createRouter({
       name: "clerk",
       component: () => import("./views/Clerk.vue"),
     },
+    {
+      path: "/clerk/:id",
+      name: "editOrder",
+      props: true,
+      component: () => import("./views/EditOrder.vue"),
+    },
   ],
 });
 

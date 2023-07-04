@@ -18,6 +18,7 @@ const date = ref(new Date().toISOString().substr(0, 10));
 const menu1 = ref(false);
 const orders = ref([]);
 const isAdd = ref(false);
+const isEdit = ref(false);
 const user = ref(null);
 const snackbar = ref({
   value: false,
@@ -79,12 +80,45 @@ async function addOrder() {
   await getOrders();
 }
 
+async function updateOrder() {
+  isEdit.value = false;
+  await OrderServices.updateOrder(newOrder.value)
+    .then(() => {
+      snackbar.value.value = true;
+      snackbar.value.color = "green";
+      snackbar.value.text = `${newOrder.value.name} updated successfully!`;
+    })
+    .catch((error) => {
+      console.log(error);
+      snackbar.value.value = true;
+      snackbar.value.color = "error";
+      snackbar.value.text = error.response.data.message;
+    });
+  await getOrders();
+}
+
 function openAdd() {
   isAdd.value = true;
 }
 
 function closeAdd() {
   isAdd.value = false;
+}
+
+function openEdit(item) {
+  newOrder.value.id = item.id;
+  newOrder.value.pickupTime = item.pickupTime;
+  newOrder.value.dropoffTime=  item.dropoffTime;
+  newOrder.value.price = item.price;
+  newOrder.value.pickupLocation = item.pickupLocation;
+  newOrder.value.dropoffLocation = item.dropoffLocation;
+  newOrder.value.status = item.status;
+  newOrder.value.route = item.route;
+  isEdit.value = true;
+}
+
+function closeEdit() {
+  isEdit.value = false;
 }
 
 function closeSnackBar() {
@@ -115,9 +149,11 @@ function closeSnackBar() {
         @deletedList="getLists()"
       />
 
-      <v-dialog persistent v-model="isAdd" width="800">
+      <v-dialog persistent :model-value="isAdd" width="800">
         <v-card class="rounded-lg elevation-5">
-          <v-card-title class="headline mb-2">Add Order </v-card-title>
+          <v-card-title class="headline mb-2"
+              >Add Order
+            </v-card-title>
           <v-card-text>
             <v-text-field
               v-model="newOrder.pickupLocation"
@@ -141,7 +177,6 @@ function closeSnackBar() {
               type="datetime-local"
               required
             ></v-text-field>
-            <!--status dropdown-->
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
