@@ -2,10 +2,12 @@
 
 import { onMounted, ref, computed } from "vue";
 import { useRoute } from "vue-router";
+import { useRouter } from "vue-router";
 import OrderServices from "../services/OrderServices.js";
 import moment from "moment";
 
 const route = useRoute();
+const router = useRouter();
 
 const order = ref({});
 const snackbar = ref({
@@ -34,6 +36,7 @@ async function updateOrder() {
       snackbar.value.value = true;
       snackbar.value.color = "green";
       snackbar.value.text = `${order.value.name} updated successfully!`;
+      router.push({ name: "clerk", params: {} });
     })
     .catch((error) => {
       console.log(error);
