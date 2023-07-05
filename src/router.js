@@ -34,6 +34,13 @@ const router = createRouter({
       name: "home",
       component: () => import("./views/Home.vue"),
     },
+    {
+      path: "/courier",
+      name: "courier",
+      component: () => import("./views/Courier.vue"),
+    },
+
+    
   ],
 });
 
