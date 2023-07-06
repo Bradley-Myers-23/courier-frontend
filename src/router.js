@@ -23,12 +23,12 @@ const router = createRouter({
       name: "trips",
       component: () => import("./views/TripList.vue"),
     },
-    {
-      path: "/trip/:id",
-      name: "editTrip",
-      props: true,
-      component: () => import("./views/EditTrip.vue"),
-    },
+    // {
+    //   path: "/trip/:id",
+    //   name: "editTrip",
+    //   props: true,
+    //   component: () => import("./views/EditTrip.vue"),
+    // },
     {
       path: "/home",
       name: "home",
