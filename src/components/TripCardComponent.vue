@@ -103,9 +103,9 @@ async function getUsers() {
 }
 
 
-function navigateToEdit() {
-  router.push({ name: "editTrip", params: { id: props.trip.id } });
-}
+// function navigateToEdit() {
+//   router.push({ name: "editTrip", params: { id: props.trip.id } });
+// }
 
 async function addUserToTrip(user) {
   userTrip.value.userId = user.id;
@@ -464,7 +464,7 @@ function formatURL(url) {
           <v-row>
             <v-col>
               <v-list>
-                <v-list-item v-if="user !== null && user.userType == 'Admin'" v-for="user in users" :key="user.id" @click="addUserToTrip(user)">
+                <!-- <v-list-item v-if="user !== null && user.userType == 'Admin'" v-for="user in users" :key="user.id" @click="addUserToTrip(user)"> -->
                   <v-row align="center">
                     <v-col cols="6">
                       <v-list-item-content>
@@ -472,7 +472,7 @@ function formatURL(url) {
                       </v-list-item-content>
                     </v-col>
                   </v-row>
-                </v-list-item>
+                <!-- </v-list-item> -->
                 <v-list-item v-if="user !== null && user.userType !== 'Admin'" @click="addUserToTrip(user)">
                   <v-row align="center">
                     <v-col cols="6">
