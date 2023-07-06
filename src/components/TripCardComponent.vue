@@ -103,9 +103,9 @@ async function getUsers() {
 }
 
 
-// function navigateToEdit() {
-//   router.push({ name: "editTrip", params: { id: props.trip.id } });
-// }
+function navigateToEdit() {
+  router.push({ name: "editTrip", params: { id: props.trip.id } });
+}
 
 async function addUserToTrip(user) {
   userTrip.value.userId = user.id;
