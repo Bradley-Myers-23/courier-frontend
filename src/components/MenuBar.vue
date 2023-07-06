@@ -1,5 +1,5 @@
 <script setup>
-import ocLogo from "/Compass.png";
+//import ocLogo from "/Compass.png";
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import UserServices from "../services/UserServices";
