@@ -13,7 +13,7 @@ const title = ref("ACME Courier Service");
 const logoURL = ref("");
 
 onMounted(() => {
-  logoURL.value = ocLogo;
+  //logoURL.value = ocLogo;
   user.value = JSON.parse(localStorage.getItem("user"));
 });
 
