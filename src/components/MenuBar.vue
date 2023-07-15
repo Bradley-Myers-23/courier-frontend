@@ -1,5 +1,5 @@
 <script setup>
-//import ocLogo from "/Compass.png";
+import ocLogo from "../public/Compass.png";
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import UserServices from "../services/UserServices";
@@ -13,7 +13,7 @@ const title = ref("ACME Courier Service");
 const logoURL = ref("");
 
 onMounted(() => {
-  //logoURL.value = ocLogo;
+  logoURL.value = ocLogo;
   user.value = JSON.parse(localStorage.getItem("user"));
 });
 
