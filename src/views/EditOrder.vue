@@ -31,7 +31,7 @@ async function getOrder() {
 }
 
 async function updateOrder() {
-  await OrderServices.updateOrder(order.value.id, order.value)
+  await OrderServices.updateOrder(order.value)
     .then(() => {
       snackbar.value.value = true;
       snackbar.value.color = "green";
@@ -85,11 +85,15 @@ const dropoffTime = computed(() => {
             <v-text-field
               v-model="order.pickupLocation"
               label="Pickup Location"
+              :rules="[rules.required, rules.matches]"
+              :maxLength="2"
               required
             ></v-text-field>
             <v-text-field
               v-model="order.dropoffLocation"
               label="Dropoff Location"
+              :rules="[rules.required, rules.matches]"
+              :maxLength="2"
               required
             ></v-text-field>
             <v-text-field
@@ -127,3 +131,14 @@ const dropoffTime = computed(() => {
     </v-snackbar>
   </v-container>
 </template>
+
+<script>
+export default {
+  data: () => ({
+    rules: {
+      required: value => !!value || 'Field is required',
+      matches: value => /^[a-zA-Z][1-9]$/.test(value) || 'Must be a letter and a number',
+    },
+  }),
+}
+</script>

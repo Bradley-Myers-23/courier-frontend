@@ -7,6 +7,8 @@ import CustomerServices from "../services/CustomerServices";
 import dropdown from "vue-dropdowns";
 import UserServices from "../services/UserServices";
 
+
+
 // import { useVuerify } from "vuetify";
 
 // import { vDate } from '../../plugins/vuerify/lib/validators';
@@ -93,6 +95,7 @@ async function getUsers() {
 async function addOrder() {
   isAdd.value = false;
   newOrder.value.customerId = selectedCustomer.value.id;
+  newOrder.value.userId = user.value.id;
 
   await OrderServices.addOrder(newOrder.value)
     .then(() => {
@@ -271,11 +274,15 @@ function formatPhoneNumber(phoneNumber) {
             <v-text-field
               v-model="newOrder.pickupLocation"
               label="Pickup Location"
+              :rules="[rules.required, rules.matches]"
+              :maxLength="2"
               required
             ></v-text-field>
             <v-text-field
               v-model="newOrder.dropoffLocation"
               label="Dropoff Location"
+              :rules="[rules.required, rules.matches]"
+              :maxLength="2"
               required
             ></v-text-field>
             <v-text-field
@@ -433,3 +440,14 @@ function formatPhoneNumber(phoneNumber) {
     </div>
   </v-container>
 </template>
+
+<script>
+export default {
+  data: () => ({
+    rules: {
+      required: value => !!value || 'Field is required',
+      matches: value => /^[a-zA-Z][1-9]$/.test(value) || 'Must be a letter and a number',
+    },
+  }),
+}
+</script>
