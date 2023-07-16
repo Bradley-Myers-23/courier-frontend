@@ -49,7 +49,7 @@ async function login() {
       snackbar.value.value = true;
       snackbar.value.color = "green";
       snackbar.value.text = "Login successful!";
-      router.push({ name: "trips" });
+      router.push({ name: "home" });
     })
     .catch((error) => {
       console.log(error);
