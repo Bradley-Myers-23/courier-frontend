@@ -127,7 +127,7 @@ async function createCustomer() {
       snackbar.value.color = "error";
       snackbar.value.text = error.response.data.message;
     });
-  await getOrders();
+    window.location.reload();
 }
 
 function openAdd() {
