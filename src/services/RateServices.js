@@ -10,8 +10,8 @@ export default {
   addRate(rate) {
     return apiClient.post("rates", rate);
   },
-  updateRate(rateId, rate) {
-    return apiClient.put("rates/" + rateId, rate);
+  updateRate(rate) {
+    return apiClient.put("rates/" + rate.id, rate);
   },
   deleteRate(rateId) {
     return apiClient.delete("rates/" + rateId);
