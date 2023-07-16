@@ -3,7 +3,8 @@ import { onMounted } from "vue";
 import { ref } from "vue";
 import OrderCard from "../components/OrderComponent.vue";
 import OrderServices from "../services/OrderServices.js";
-import moment from "moment";
+import CustomerServices from "../services/CustomerServices";
+import dropdown from "vue-dropdowns";
 
 // import { useVuerify } from "vuetify";
 
@@ -17,9 +18,14 @@ import moment from "moment";
 const date = ref(new Date().toISOString().substr(0, 10));
 const menu1 = ref(false);
 const orders = ref([]);
+const customers = ref([]);
 const isAdd = ref(false);
 const isEdit = ref(false);
 const user = ref(null);
+const isAddCustomer = ref(false);
+const isCreateCustomer = ref(false);
+const isViewCustomer = ref(false);
+const selectedCustomer = ref({});
 const snackbar = ref({
   value: false,
   color: "",
@@ -41,10 +47,19 @@ const newOrder = ref({
   dropoffLocation: null,
   status: "Pending",
   route: "",
+  customerId: null,
+  userId: null,
+});
+
+const newCustomer = ref({
+  PhoneNumber: null,
+  name: null,
+  address: null,
 });
 
 onMounted(async () => {
   await getOrders();
+  await getCustomers();
   user.value = JSON.parse(localStorage.getItem("user"));
 });
 
@@ -63,7 +78,7 @@ async function getOrders() {
 }
 async function addOrder() {
   isAdd.value = false;
-  newOrder.value.userId = user.value.id;
+  newOrder.value.customerId = selectedCustomer.value.id;
 
   await OrderServices.addOrder(newOrder.value)
     .then(() => {
@@ -80,13 +95,14 @@ async function addOrder() {
   await getOrders();
 }
 
-async function updateOrder() {
-  isEdit.value = false;
-  await OrderServices.updateOrder(newOrder.value)
+async function createCustomer() {
+  isCreateCustomer.value = false;
+
+  await CustomerServices.addCustomer(newCustomer.value)
     .then(() => {
       snackbar.value.value = true;
       snackbar.value.color = "green";
-      snackbar.value.text = `${newOrder.value.name} updated successfully!`;
+      snackbar.value.text = `${newCustomer.value.name} added successfully!`;
     })
     .catch((error) => {
       console.log(error);
@@ -105,30 +121,104 @@ function closeAdd() {
   isAdd.value = false;
 }
 
-function openEdit(item) {
-  newOrder.value.id = item.id;
-  newOrder.value.pickupTime = item.pickupTime;
-  newOrder.value.dropoffTime=  item.dropoffTime;
-  newOrder.value.price = item.price;
-  newOrder.value.pickupLocation = item.pickupLocation;
-  newOrder.value.dropoffLocation = item.dropoffLocation;
-  newOrder.value.status = item.status;
-  newOrder.value.route = item.route;
-  isEdit.value = true;
+function openAddCustomer() {
+  isAddCustomer.value = true;
 }
 
-function closeEdit() {
-  isEdit.value = false;
+function closeAddCustomer() {
+  isAddCustomer.value = false;
+}
+
+function openCreateCustomer() {
+  isCreateCustomer.value = true;
+}
+
+function closeCreateCustomer() {
+  isCreateCustomer.value = false;
 }
 
 function closeSnackBar() {
   snackbar.value.value = false;
 }
+
+async function getCustomers() {
+  await CustomerServices.getCustomers()
+    .then((response) => {
+      customers.value = response.data;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+function assignCustomer(customer){
+  selectedCustomer.value.name = customer.name;
+  selectedCustomer.value.id = customer.id
+  isAddCustomer.value = false;
+}
+
+function openCustomerDetails(customer) {
+  selectedCustomer.value = customer;
+  selectedCustomer.value.id = customer.id;
+  isViewCustomer.value = true;
+}
+
+function closeCustomerDetails() {
+  isViewCustomer.value = false;
+}
+
+async function deleteCustomer(id) {
+  await CustomerServices.deleteCustomer(id)
+    .then((response) => {
+      users.value = response.data;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+    window.location.reload();
+}
+
+function formatPhoneNumber(phoneNumber) {
+  // Assuming the phone number is in a standard format like "1234567890"
+  const areaCode = phoneNumber.slice(0, 3);
+  const firstPart = phoneNumber.slice(3, 6);
+  const secondPart = phoneNumber.slice(6);
+  
+  // Format the phone number as "(123) 456-7890"
+  return `(${areaCode}) ${firstPart}-${secondPart}`;
+}
+
 </script>
+
+<dropdown :options="arrayOfObjects" :selected="object" v-on:updateOption="methodToRunOnSelect"></dropdown>
+
 
 <template>
   <v-container>
     <div id="body">
+      <v-row align="center" class="mb-4">
+        <v-col cols="10"
+          ><v-card-title class="pl-0 text-h4 font-weight-bold"
+            >Customers
+          </v-card-title>
+        </v-col>
+        <v-col class="d-flex justify-end" cols="2">
+          <v-btn v-if="user !== null" color="accent" @click="openCreateCustomer()"
+            >Add</v-btn
+          >
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-chip
+          size="large"
+          v-for="customer in customers"
+          :key="customer.id"
+          pill
+          @click="openCustomerDetails(customer)"
+          >
+            {{ customer.name }}
+        </v-chip>
+      </v-row>
       <v-row align="center" class="mb-4">
         <v-col cols="10"
           ><v-card-title class="pl-0 text-h4 font-weight-bold"
@@ -146,6 +236,7 @@ function closeSnackBar() {
         v-for="order in orders"
         :key="order.id"
         :order="order"
+        :customer="customers.filter(customer => customer.id === order.customerId)[0].name"
         @deletedList="getLists()"
       />
 
@@ -155,6 +246,12 @@ function closeSnackBar() {
               >Add Order
             </v-card-title>
           <v-card-text>
+            <v-icon
+              size="small"
+              icon="mdi-account"
+              @click="openAddCustomer()"
+            ></v-icon>
+            {{ selectedCustomer.name }}
             <v-text-field
               v-model="newOrder.pickupLocation"
               label="Pickup Location"
@@ -189,6 +286,121 @@ function closeSnackBar() {
           </v-card-actions>
         </v-card>
       </v-dialog>
+
+      <v-dialog
+        persistent
+        :model-value="isAddCustomer"
+        width="800"
+      >
+      <v-card class="rounded-lg elevation-5">
+          <v-card-title class="headline mb-2">
+            Assign Customer
+          </v-card-title>
+          <v-card-text>
+            <v-row>
+              <v-col>
+                <v-list>
+                  <v-list-item v-for="customer in customers" :key="customer.id" @click="assignCustomer(customer)">
+                    <v-row align="center">
+                      <v-col cols="6">
+                        <v-list-item-content>
+                          <v-list-item-title>{{ customer.name }} - {{ customer.address }} - {{ customer.PhoneNumber }}</v-list-item-title>
+                        </v-list-item-content>
+                      </v-col>
+                    </v-row>
+                  </v-list-item>
+                </v-list>
+              </v-col>
+            </v-row>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+              variant="flat"
+              color="secondary"
+              @click="closeAddCustomer()"
+              >Close</v-btn
+            >
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+      <v-dialog persistent :model-value="isCreateCustomer" width="800">
+        <v-card class="rounded-lg elevation-5">
+          <v-card-title class="headline mb-2"
+              >Add Customer
+            </v-card-title>
+          <v-card-text>
+            <v-text-field
+              v-model="newCustomer.name"
+              label="Name"
+              required
+            ></v-text-field>
+            <v-text-field
+              v-model="newCustomer.address"
+              label="Address"
+              required
+            ></v-text-field>
+            <v-text-field
+              v-model="newCustomer.PhoneNumber"
+              label="Phone Number"
+              required
+            ></v-text-field>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn variant="flat" color="secondary" @click="closeCreateCustomer()"
+              >Close</v-btn
+            >
+            <v-btn variant="flat" color="primary" @click="createCustomer()"
+              >Add Customer</v-btn
+            >
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+      <v-dialog
+      persistent
+      :model-value="isViewCustomer"
+      width="800"
+    >
+      <v-card class="rounded-lg elevation-5">
+        <v-card-title class="headline mb-2">
+          Customer Details
+        </v-card-title>
+        <v-table>
+          <tbody>
+            <tr>
+              <td>Name</td>
+              <td>Address</td>
+              <td>Phone Number</td>
+            </tr>
+            <tr>
+              <td>
+                {{ selectedCustomer.name }}
+              </td>
+              <td>
+                {{ selectedCustomer.address }}
+              </td>
+              <td>
+                {{ formatPhoneNumber(selectedCustomer.PhoneNumber) }}
+              </td>
+            </tr>
+          </tbody>
+        </v-table>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            variant="flat"
+            color="secondary"
+            @click="closeCustomerDetails()"
+            >Close</v-btn
+          >
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+
       <v-snackbar v-model="snackbar.value" rounded="pill">
         {{ snackbar.text }}
 
