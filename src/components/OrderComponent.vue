@@ -14,6 +14,7 @@ const isEdit = ref(false);
 const users = ref([]);
 const user = ref(null);
 const selectedUser = ref({});
+const selectedOrder = ref({});
 
 const newOrder = ref({
   pickupTime: null,
@@ -38,7 +39,13 @@ const props = defineProps({
   },
   customer:{
     required: true,
-  }
+  },
+  courierFName:{
+    required: true,
+  },
+  courierLName:{
+    required: true,
+  },
 });
 
 onMounted(async () => {
@@ -80,11 +87,34 @@ function closeAddUser() {
   isAddUser.value = false;
 }
 
-function assignCourier(user){
+async function assignCourier(user, order){
   selectedUser.value.id = user.id;
   selectedUser.value.firstName = user.firstName;
   selectedUser.value.lastName = user.lastName;
   isAddUser.value = false;
+
+  await OrderServices.getOrder(order.id)
+    .then((response) => {
+      selectedOrder.value = response.data;
+      selectedOrder.value.userId = user.id;
+    })
+    .catch((error) => {
+      console.log(error);
+  });
+
+  await OrderServices.updateOrder(selectedOrder.value)
+    .then(() => {
+      snackbar.value.value = true;
+      snackbar.value.color = "green";
+      snackbar.value.text = `Order updated successfully!`;
+    })
+    .catch((error) => {
+      console.log(error);
+      snackbar.value.value = true;
+      snackbar.value.color = "error";
+      snackbar.value.text = error.response.data.message;
+    });
+    window.location.reload();
 }
 
 </script>
@@ -127,12 +157,9 @@ function assignCourier(user){
       <v-card-text class="pt-0" v-show="showDetails">
         <h3>Courier assigned to this order: </h3>
  
-        <v-chip
-          size="large"
-          @click="openUserDetails(userOrder)"
-          >
-            {{ selectedUser.firstName }} 
-            {{ selectedUser.lastName }}
+        <v-chip size="large">
+            {{ courierFName }} 
+            {{ courierLName }}
         </v-chip>
 
         <br><br>
@@ -184,7 +211,7 @@ function assignCourier(user){
           <v-row>
             <v-col>
               <v-list>
-                <v-list-item v-if="user !== null" v-for="user in users" :key="user.id" @click="assignCourier(user)">
+                <v-list-item v-if="user !== null" v-for="user in users" :key="user.id" @click="assignCourier(user, order)">
                   <v-row align="center">
                     <v-col cols="6">
                       <v-list-item-content>

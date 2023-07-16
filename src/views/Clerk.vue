@@ -5,6 +5,7 @@ import OrderCard from "../components/OrderComponent.vue";
 import OrderServices from "../services/OrderServices.js";
 import CustomerServices from "../services/CustomerServices";
 import dropdown from "vue-dropdowns";
+import UserServices from "../services/UserServices";
 
 // import { useVuerify } from "vuetify";
 
@@ -21,6 +22,7 @@ const orders = ref([]);
 const customers = ref([]);
 const isAdd = ref(false);
 const isEdit = ref(false);
+const users = ref([]);
 const user = ref(null);
 const isAddCustomer = ref(false);
 const isCreateCustomer = ref(false);
@@ -60,6 +62,7 @@ const newCustomer = ref({
 onMounted(async () => {
   await getOrders();
   await getCustomers();
+  await getUsers();
   user.value = JSON.parse(localStorage.getItem("user"));
 });
 
@@ -76,6 +79,17 @@ async function getOrders() {
       snackbar.value.text = error.response.data.message;
     });
 }
+
+async function getUsers() {
+  await UserServices.getUser()
+    .then((response) => {
+      users.value = response.data;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
 async function addOrder() {
   isAdd.value = false;
   newOrder.value.customerId = selectedCustomer.value.id;
@@ -237,6 +251,8 @@ function formatPhoneNumber(phoneNumber) {
         :key="order.id"
         :order="order"
         :customer="customers.filter(customer => customer.id === order.customerId)[0].name"
+        :courierFName="users.filter(user => user.id === order.userId)[0].firstName"
+        :courierLName="users.filter(user => user.id === order.userId)[0].lastName"
         @deletedList="getLists()"
       />
 
