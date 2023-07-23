@@ -205,6 +205,13 @@ function formatPhoneNumber(phoneNumber) {
   return `(${areaCode}) ${firstPart}-${secondPart}`;
 }
 
+function getBill(cust) {
+  var total = 0;
+  const arr = orders.value;
+  arr.filter(order => order.customerId === cust.id).forEach(order => total = total + order.price);
+  return total;
+}
+
 </script>
 
 <dropdown :options="arrayOfObjects" :selected="object" v-on:updateOption="methodToRunOnSelect"></dropdown>
@@ -411,6 +418,18 @@ function formatPhoneNumber(phoneNumber) {
             </tr>
           </tbody>
         </v-table>
+        <v-card-title class="headline mb-2">
+        <v-row align="center">
+          <div v-for="order in orders">
+            <v-chip v-if="order.customerId === selectedCustomer.id" size="small" pill>
+              Order #{{ order.id }}
+            </v-chip>
+            </div>
+        </v-row>
+        </v-card-title>
+        <v-card-title class="headline mb-2">
+          Total Bill: ${{ getBill(selectedCustomer) }}
+        </v-card-title>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
