@@ -7,6 +7,7 @@ export default {
   getOrdersByUserId(userId) {
     return apiClient.get("orders/user/" + userId);
   },
+
   getOrder(id) {
     return apiClient.get("orders/" + id);
   },
@@ -19,4 +20,8 @@ export default {
   deleteOrder(orderId) {
     return apiClient.delete("orders/" + orderId);
   },
+  getRoutes(router) {
+    return apiClient.get(`mapData/${router.startAddress}/${router.endAddress}`);
+  },
+  
 };
