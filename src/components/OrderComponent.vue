@@ -97,6 +97,34 @@ async function assignCourier(user, order){
     .then((response) => {
       selectedOrder.value = response.data;
       selectedOrder.value.userId = user.id;
+      selectedOrder.value.status = "Assigned"
+    })
+    .catch((error) => {
+      console.log(error);
+  });
+
+  await OrderServices.updateOrder(selectedOrder.value)
+    .then(() => {
+      snackbar.value.value = true;
+      snackbar.value.color = "green";
+      snackbar.value.text = `Order updated successfully!`;
+    })
+    .catch((error) => {
+      console.log(error);
+      snackbar.value.value = true;
+      snackbar.value.color = "error";
+      snackbar.value.text = error.response.data.message;
+    });
+    window.location.reload();
+}
+
+async function cancelOrder(order){
+
+  await OrderServices.getOrder(order.id)
+    .then((response) => {
+      selectedOrder.value = response.data;
+      selectedOrder.value.userId = user.id;
+      selectedOrder.value.status = "Cancelled"
     })
     .catch((error) => {
       console.log(error);
@@ -147,6 +175,12 @@ async function assignCourier(user, order){
           <v-icon
             v-if="user !== null"
             size="small"
+            icon="mdi-cancel"
+            @click="cancelOrder(order)"
+          ></v-icon>
+          <v-icon
+            v-if="user !== null"
+            size="small"
             icon="mdi-delete"
             @click="deleteOrder(order.id)"
           ></v-icon>
@@ -173,6 +207,7 @@ async function assignCourier(user, order){
               <td>Dropoff Location</td>
               <td>Pickup Time</td>
               <td>Dropoff Time</td>
+              <td>Order Status</td>
             </tr>
             <tr>
               <td>
@@ -189,6 +224,9 @@ async function assignCourier(user, order){
               </td>
               <td>
                 {{new Date(order.dropoffTime).toLocaleString('en-US')}}
+              </td>
+              <td>
+                {{order.status}}
               </td>
             </tr>
           </tbody>
