@@ -3,6 +3,7 @@ import { onMounted, ref, computed } from "vue";
 import { useRouter } from "vue-router";
 import UserServices from "../services/UserServices";
 import OrderServices from "../services/OrderServices";
+import RateServices from "../services/RateServices";
 
 const router = useRouter();
 
@@ -15,6 +16,7 @@ const users = ref([]);
 const user = ref(null);
 const selectedUser = ref({});
 const selectedOrder = ref({});
+const rate = ref({});
 
 const newOrder = ref({
   pickupTime: null,
@@ -50,6 +52,7 @@ const props = defineProps({
 
 onMounted(async () => {
   await getUsers();
+  await getRates();
   user.value = JSON.parse(localStorage.getItem("user"));
   console.log(user.value);
 });
@@ -58,6 +61,17 @@ async function getUsers() {
   await UserServices.getUser()
     .then((response) => {
       users.value = response.data;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+async function getRates() {
+  await RateServices.getRates()
+    .then((response) => {
+      rate.value = response.data[0];
+      console.log(rate.value.CancelFee);
     })
     .catch((error) => {
       console.log(error);
@@ -124,7 +138,10 @@ async function cancelOrder(order){
     .then((response) => {
       selectedOrder.value = response.data;
       selectedOrder.value.userId = user.id;
-      selectedOrder.value.status = "Cancelled"
+      selectedOrder.value.status = "Cancelled";
+      if(order.pickupTime < (new Date(Date.now('UTC')).toISOString())){
+        selectedOrder.value.price = rate.value.CancelFee;
+      }
     })
     .catch((error) => {
       console.log(error);
