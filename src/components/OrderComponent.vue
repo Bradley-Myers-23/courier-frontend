@@ -225,6 +225,7 @@ async function cancelOrder(order){
               <td>Pickup Time</td>
               <td>Dropoff Time</td>
               <td>Order Status</td>
+              <td>Price</td>
             </tr>
             <tr>
               <td>
@@ -244,6 +245,9 @@ async function cancelOrder(order){
               </td>
               <td>
                 {{order.status}}
+              </td>
+              <td>
+                ${{order.price}}
               </td>
             </tr>
           </tbody>
