@@ -49,13 +49,13 @@ function logout() {
       <v-spacer></v-spacer>
 
       <v-btn class="mx-2" :to="{ name: 'home' }"> Home </v-btn>
-      <v-btn v-if="user !== null" class="mx-2" :to="{ name: 'courier' }"> 
+      <v-btn v-if="user !== null && (user.userType === 'courier' || user.userType === 'admin')" class="mx-2" :to="{ name: 'courier' }"> 
         Courier
       </v-btn>
-      <v-btn v-if="user !== null" class="mx-2" :to="{ name: 'clerk' }">
+      <v-btn v-if="user !== null && (user.userType === 'clerk' || user.userType === 'admin')" class="mx-2" :to="{ name: 'clerk' }">
         Clerk
       </v-btn>
-      <v-btn v-if="user !== null" class="mx-2" :to="{ name: 'admin' }">
+      <v-btn v-if="user !== null && (user.userType === 'admin')" class="mx-2" :to="{ name: 'admin' }">
         Admin
       </v-btn>
       <v-btn v-if="user === null" class="mx-2" :to="{ name: 'login' }">
