@@ -127,7 +127,7 @@ function openEdit(){
       <v-row>
         <v-card class="rounded-lg elevation-5">
           <v-card-title class="headline mb-2"
-              >Edit Order
+              >Edit Rates
             </v-card-title>
           <v-card-text>
             <v-text-field
@@ -154,7 +154,7 @@ function openEdit(){
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn variant="flat" color="primary" @click="updateRates()"
-              >Update Order</v-btn
+              >Update Rates</v-btn
             >
           </v-card-actions>
         </v-card>
