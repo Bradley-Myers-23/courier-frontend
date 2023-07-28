@@ -465,7 +465,7 @@ export default {
   data: () => ({
     rules: {
       required: value => !!value || 'Field is required',
-      matches: value => /^[a-zA-Z][1-9]$/.test(value) || 'Must be a letter and a number',
+      matches: value => /^[A-Z][1-9]$/.test(value) || 'Must be a capital letter and a number',
     },
   }),
 }
