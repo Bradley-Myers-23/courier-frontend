@@ -2,14 +2,17 @@
 import { onMounted, ref, computed, reactive } from "vue";
 
 import OrderServices from "../services/OrderServices.js";
+import RateServices from "../services/RateServices.js";
 
 const user = ref(null);
 const orders = ref([]);
 const routeDirections = reactive({});
+const rate = ref({});
 
 onMounted(async () => {
   user.value = JSON.parse(localStorage.getItem("user"));
   await getOrders();
+  await getRates();
 });
 
 async function getOrders() {
@@ -25,6 +28,20 @@ async function getOrders() {
       snackbar.value.text = error.response.data.message;
     });
 }
+
+async function getRates() {
+  await RateServices.getRates()
+    .then((response) => {
+      rate.value = response.data[0];
+    })
+    .catch((error) => {
+      console.log(error);
+      snackbar.value.value = true;
+      snackbar.value.color = "error";
+      snackbar.value.text = error.response.data.message;
+    });
+}
+
 function startDriving(delivery) {
   delivery.status = "Driving";
 
@@ -73,16 +90,27 @@ function completeDelivery(delivery) {
       snackbar.value.text = error.response.data.message;
     });
 }
+
 function formatDate(dateTimeStr) {
-      const date = new Date(dateTimeStr);
-      return date.toISOString().slice(0, 10); // Returns only the date part (YYYY-MM-DD)
-    }
+  const date = new Date(dateTimeStr);
+  return date.toLocaleString('en-US'); // Returns only the date part (YYYY-MM-DD)
+}
+
+function getBonus() {
+  var total = 0;
+  const arr = orders.value;
+  arr.filter(order => (order.status === 'Delivered') && (order.dropoffTime > order.updatedAt)).forEach(order => total = total + rate.value.Bonus);
+  return total;
+}
+
 </script>
 <template>
   <v-app>
     <v-main>
       <v-container>
         <h1 class="text-center">Courier Dashboard</h1>
+
+        <h2>Courier Total Bonus: ${{ getBonus() }}</h2>
 
         <h2>Assigned Deliveries</h2>
         <v-card
@@ -107,7 +135,7 @@ function formatDate(dateTimeStr) {
               v-show="
                 delivery.status !== 'Driving' && delivery.status !== 'Pending'
               "
-            >
+            > 
               <strong>Route:</strong>{{ delivery.route }}
             </p>
             <p><strong>Status:</strong> {{ delivery.status }}</p>
