@@ -9,27 +9,6 @@ const router = createRouter({
       component: () => import("./views/Login.vue"),
     },
     {
-      path: "/sites",
-      name: "sites",
-      component: () => import("./views/SiteList.vue"),
-    },
-    {
-      path: "/hotels",
-      name: "hotels",
-      component: () => import("./views/HotelList.vue"),
-    },
-    {
-      path: "/trips",
-      name: "trips",
-      component: () => import("./views/TripList.vue"),
-    },
-    // {
-    //   path: "/trip/:id",
-    //   name: "editTrip",
-    //   props: true,
-    //   component: () => import("./views/EditTrip.vue"),
-    // },
-    {
       path: "/home",
       name: "home",
       component: () => import("./views/Home.vue"),
@@ -49,6 +28,11 @@ const router = createRouter({
       name: "editOrder",
       props: true,
       component: () => import("./views/EditOrder.vue"),
+    },
+    {
+      path: "/admin",
+      name: "admin",
+      component: () => import("./views/Admin.vue"),
     },
   ],
 });

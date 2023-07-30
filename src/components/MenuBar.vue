@@ -1,5 +1,5 @@
 <script setup>
-//import ocLogo from "/Compass.png";
+import ocLogo from "../public/Compass.png";
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import UserServices from "../services/UserServices";
@@ -13,7 +13,7 @@ const title = ref("ACME Courier Service");
 const logoURL = ref("");
 
 onMounted(() => {
-  //logoURL.value = ocLogo;
+  logoURL.value = ocLogo;
   user.value = JSON.parse(localStorage.getItem("user"));
 });
 
@@ -49,9 +49,14 @@ function logout() {
       <v-spacer></v-spacer>
 
       <v-btn class="mx-2" :to="{ name: 'home' }"> Home </v-btn>
-      <v-btn class="mx-2" :to="{ name: 'courier' }"> courier </v-btn>
-      <v-btn v-if="user !== null" class="mx-2" :to="{ name: 'clerk' }">
+      <v-btn v-if="user !== null && (user.userType === 'courier' || user.userType === 'admin')" class="mx-2" :to="{ name: 'courier' }"> 
+        Courier
+      </v-btn>
+      <v-btn v-if="user !== null && (user.userType === 'clerk' || user.userType === 'admin')" class="mx-2" :to="{ name: 'clerk' }">
         Clerk
+      </v-btn>
+      <v-btn v-if="user !== null && (user.userType === 'admin')" class="mx-2" :to="{ name: 'admin' }">
+        Admin
       </v-btn>
       <v-btn v-if="user === null" class="mx-2" :to="{ name: 'login' }">
         Login

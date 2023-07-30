@@ -2,8 +2,10 @@
 
 import { onMounted, ref, computed } from "vue";
 import { useRoute } from "vue-router";
+import RateServices from "../services/RateServices";
 
 
+const rate = ref({});
 const snackbar = ref({
   value: false,
   color: "",
@@ -11,8 +13,21 @@ const snackbar = ref({
 });
 
 onMounted(async () => {
-  
+  await getRates();
 });
+
+async function getRates() {
+  await RateServices.getRates()
+    .then((response) => {
+      rate.value = response.data[0];
+    })
+    .catch((error) => {
+      console.log(error);
+      snackbar.value.value = true;
+      snackbar.value.color = "error";
+      snackbar.value.text = error.response.data.message;
+    });
+}
 
 </script>
 
@@ -38,12 +53,7 @@ onMounted(async () => {
           <v-card-title>
             <v-row align="center">
               <v-col cols="10"
-                ><v-card-title class="headline">Initial Fee: </v-card-title>
-              </v-col>
-            </v-row>
-            <v-row align="center">
-              <v-col class="d-flex justify-start">
-                [PRICE GOES HERE]
+                ><v-card-title class="headline">Initial Fee: ${{ rate.IntialPrice }}</v-card-title>
               </v-col>
             </v-row>
           </v-card-title>
@@ -56,12 +66,7 @@ onMounted(async () => {
           <v-card-title>
             <v-row align="center">
               <v-col cols="10"
-                ><v-card-title class="headline">Price per block: </v-card-title>
-              </v-col>
-            </v-row>
-            <v-row align="center">
-              <v-col class="d-flex justify-start">
-                [PRICE GOES HERE]
+                ><v-card-title class="headline">Price per block: ${{ rate.pricePerBlock }}</v-card-title>
               </v-col>
             </v-row>
           </v-card-title>
@@ -74,12 +79,7 @@ onMounted(async () => {
           <v-card-title>
             <v-row align="center">
               <v-col cols="10"
-                ><v-card-title class="headline">Cancellation Fee: </v-card-title>
-              </v-col>
-            </v-row>
-            <v-row align="center">
-              <v-col class="d-flex justify-start">
-                [PRICE GOES HERE]
+                ><v-card-title class="headline">Cancellation Fee: ${{ rate.CancelFee }}</v-card-title>
               </v-col>
             </v-row>
           </v-card-title>
