@@ -133,6 +133,7 @@ async function assignCourier(user, order){
 }
 
 async function cancelOrder(order){
+  await getRates();
 
   await OrderServices.getOrder(order.id)
     .then((response) => {
