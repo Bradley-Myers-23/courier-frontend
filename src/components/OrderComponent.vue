@@ -178,19 +178,19 @@ async function cancelOrder(order){
         </v-col>
         <v-col class="d-flex justify-left">
           <v-icon
-            v-if="user !== null && (order.status !== 'Cancelled' && order.status != 'Delivered')"
+            v-if="user !== null && (order.status !== 'Cancelled' && order.status !== 'Delivered')"
             size="small"
             icon="mdi-pencil"
             @click="navigateToEdit()"
           ></v-icon>
           <v-icon
-            v-if="user !== null && (order.status !== 'Cancelled' && order.status != 'Delivered')"
+            v-if="user !== null && (order.status !== 'Cancelled' && order.status !== 'Delivered')"
             size="small"
             icon="mdi-account"
             @click="openAddUser()"
           ></v-icon>
           <v-icon
-            v-if="user !== null && (order.status !== 'Cancelled' && order.status != 'Delivered')"
+            v-if="user !== null && (order.status !== 'Cancelled' && order.status !== 'Delivered')"
             size="small"
             icon="mdi-cancel"
             @click="cancelOrder(order)"
