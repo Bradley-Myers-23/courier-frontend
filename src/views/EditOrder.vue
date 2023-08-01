@@ -36,7 +36,7 @@ async function updateOrder() {
       snackbar.value.value = true;
       snackbar.value.color = "green";
       snackbar.value.text = `${order.value.name} updated successfully!`;
-      window.location.reload();
+      router.push({ name: "clerk", params: {} });
     })
     .catch((error) => {
       console.log(error);
