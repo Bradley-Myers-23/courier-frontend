@@ -141,6 +141,8 @@ async function cancelOrder(order){
       selectedOrder.value.userId = user.id;
       selectedOrder.value.status = "Cancelled";
       selectedOrder.value.price = rate.value.CancelFee;
+      selectedOrder.value.pickupLocation = null;
+      selectedOrder.value.dropoffLocation = null;
     })
     .catch((error) => {
       console.log(error);
