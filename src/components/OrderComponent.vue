@@ -86,7 +86,7 @@ async function deleteOrder(id) {
     .catch((error) => {
       console.log(error);
     });
-    router.push({ name: "clerk", params: {} });
+    window.location.reload();
 }
 
 function navigateToEdit() {
@@ -129,7 +129,7 @@ async function assignCourier(user, order){
       snackbar.value.color = "error";
       snackbar.value.text = error.response.data.message;
     });
-    router.push({ name: "clerk", params: {} });
+    window.location.reload();
 }
 
 async function cancelOrder(order){
@@ -139,9 +139,7 @@ async function cancelOrder(order){
       selectedOrder.value = response.data;
       selectedOrder.value.userId = user.id;
       selectedOrder.value.status = "Cancelled";
-      if(order.pickupTime < (new Date(Date.now('UTC')).toISOString())){
-        selectedOrder.value.price = rate.value.CancelFee;
-      }
+      selectedOrder.value.price = rate.value.CancelFee;
     })
     .catch((error) => {
       console.log(error);
@@ -159,7 +157,7 @@ async function cancelOrder(order){
       snackbar.value.color = "error";
       snackbar.value.text = error.response.data.message;
     });
-    router.push({ name: "clerk", params: {} });
+    window.location.reload();
 }
 
 </script>

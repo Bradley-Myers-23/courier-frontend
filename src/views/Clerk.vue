@@ -127,7 +127,7 @@ async function createCustomer() {
       snackbar.value.color = "error";
       snackbar.value.text = error.response.data.message;
     });
-    router.push({ name: "clerk", params: {} });
+    window.location.reload();
 }
 
 function openAdd() {
@@ -192,7 +192,7 @@ async function deleteCustomer(id) {
     .catch((error) => {
       console.log(error);
     });
-    router.push({ name: "clerk", params: {} });
+    window.location.reload();
 }
 
 function formatPhoneNumber(phoneNumber) {
