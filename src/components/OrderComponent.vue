@@ -86,7 +86,7 @@ async function deleteOrder(id) {
     .catch((error) => {
       console.log(error);
     });
-    window.location.reload();
+    router.push({ name: "clerk", params: {} });
 }
 
 function navigateToEdit() {
@@ -159,7 +159,7 @@ async function cancelOrder(order){
       snackbar.value.color = "error";
       snackbar.value.text = error.response.data.message;
     });
-    window.location.reload();
+    router.push({ name: "clerk", params: {} });
 }
 
 </script>
