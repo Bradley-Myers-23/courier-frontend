@@ -129,7 +129,7 @@ async function assignCourier(user, order){
       snackbar.value.color = "error";
       snackbar.value.text = error.response.data.message;
     });
-    window.location.reload();
+    router.push({ name: "clerk", params: {} });
 }
 
 async function cancelOrder(order){
